@@ -1,7 +1,7 @@
 {
-  "name": "reactive-dep-tree",
+  "name": "wytiwys",
   "version": "1.0.0",
-  "main": "dist/reactive-dep-tree.common.js",
+  "main": "dist/wytiwys.common.js",
   "files": [
     "dist/"
   ],
@@ -9,7 +9,7 @@
     "start": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
     "test": "",
-    "buildall": "vue-cli-service build --target lib --name reactive-dep-tree src/main.js --inline-vue",
+    "buildall": "vue-cli-service build --target lib --name wytiwys src/main.js --inline-vue",
     "format": "prettier --write \"src/*.ts\"",
     "prepare": "npm run buildall",
     "prepublishOnly": "npm test && npm run lint",
