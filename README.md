@@ -174,7 +174,7 @@ npm run serve
 
 - The file that will be render when serving the dev version will be `public/index.html` . You can change it as you please as this is not being compiled.
 - For being able to use TS and to compile the code as a JS library, I "had" to create a main.js and a main.ts . main.\*s are usually the entry points in vue projects, but only one is should be necessary. In our case, we need the two of them, but I'm sure we could succeed to keep only main.ts (if somehow we succeed to compile the code in a common.js directly from main.ts)
-- According to npm, this project requires node 8, 10, 12, 14, 16 or 17. However, not all of these work. I was able to build the project with node 16, but the resulting package had 103 vulnerabilities, 7 of which critical. Node 14 did the job great.
+- According to npm, this project requires node 8, 10, 12, 14, 16 or 17. However, not all of these work. I was able to build the project with node 16, but the resulting package has 103 vulnerabilities, 7 of which critical.
 
 ### TODO
 
