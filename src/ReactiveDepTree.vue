@@ -25,8 +25,7 @@
           class="svg-tree"
           xmlns="http://www.w3.org/2000/svg"
         />
-        <DeprelDialog :sentenceBus="sentenceBus" />
-        <UposDialog :sentenceBus="sentenceBus" />
+        <EditDialog :sentenceBus="sentenceBus" />
         <ShowConll
           :reactiveSentence="reactiveSentence"
           :sentenceBus="sentenceBus"
@@ -54,13 +53,12 @@ import {
   defaultSentenceSVGOptions
 } from "dependencytreejs/lib";
 
-import DeprelDialog from "./components/DeprelDialog.vue";
-import UposDialog from "./components/UposDialog.vue";
+import EditDialog from "./components/EditDialog.vue";
 import SettingsDropdown from "./components/SettingsDropdown.vue";
 import ShowConll from "./components/ShowConll.vue";
 
 export default {
-  components: { DeprelDialog, UposDialog, SettingsDropdown, ShowConll },
+  components: { EditDialog, SettingsDropdown, ShowConll },
   // props: ["conll", "interactive", "shown-features"],
   props: {
     conll: String,
@@ -131,15 +129,10 @@ export default {
       this.sentenceBus.$emit("reset:allDialog");
       const targetLabel = e.detail.targetLabel;
       const tokenId = e.detail.clicked;
-      if (targetLabel === "UPOS") {
-        this.sentenceBus.$emit("open:uposDialog", {
-          ID: tokenId
-        });
-      } else if (targetLabel === "DEPREL") {
-        this.sentenceBus.$emit("open:deprelDialog", {
-          ID: tokenId
-        });
-      }
+      this.sentenceBus.$emit("open:editDialog", {
+        ID: tokenId,
+        FIELD: targetLabel // additional param to know which column to modify
+      });
       // this.svgClick(e);
     });
     this.sentenceSVG.addEventListener("svg-drop", e => {
@@ -157,9 +150,10 @@ export default {
         return;
       }
       if (tokenId >= 0 && headId >= 0) {
-        this.sentenceBus.$emit("open:deprelDialog", {
+        this.sentenceBus.$emit("open:editDialog", {
           ID: tokenId,
-          HEAD: headId
+          HEAD: headId,
+          FIELD: "DEPREL" // additional param to know which column to modify
         });
       }
     });
@@ -207,10 +201,6 @@ export default {
 .component-wrapper {
   /* padding-left: 20px; */
   width: fit-content;
-}
-
-.svg-tree {
-  /* margin-left: -20px; */
 }
 
 .meta {
