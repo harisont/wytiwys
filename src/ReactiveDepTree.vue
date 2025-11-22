@@ -152,7 +152,8 @@ export default {
       if (tokenId >= 0 && headId >= 0) {
         this.sentenceBus.$emit("open:editDialog", {
           ID: tokenId,
-          HEAD: headId
+          HEAD: headId,
+          FIELD: "DEPREL" // additional param to know which column to modify
         });
       }
     });
