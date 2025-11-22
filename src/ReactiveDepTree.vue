@@ -139,15 +139,12 @@ export default {
       this.sentenceBus.$emit("reset:allDialog");
       let tokenId;
       let headId;
-      if (e.detail.hovered == 0) {
-        tokenId = e.detail.dragged;
-        headId = e.detail.hovered;
-      } else if (e.detail.hovered > 0) {
+      if (e.detail.hovered > 0) {
         tokenId = e.detail.hovered;
         headId = e.detail.dragged;
       } else {
-        console.log("Error, hoveredId has a wrong value (< 0)");
-        return;
+        tokenId = e.detail.dragged;
+        headId = 0;
       }
       if (tokenId >= 0 && headId >= 0) {
         this.sentenceBus.$emit("open:editDialog", {
