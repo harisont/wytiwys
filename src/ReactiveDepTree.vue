@@ -209,10 +209,6 @@ export default {
   width: fit-content;
 }
 
-.svg-tree {
-  /* margin-left: -20px; */
-}
-
 .meta {
   margin-bottom: 0.6em;
   border-bottom: 1px solid lightgrey;
