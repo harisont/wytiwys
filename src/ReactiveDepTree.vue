@@ -51,7 +51,7 @@ import {
   SentenceCaretaker,
   SentenceSVG,
   defaultSentenceSVGOptions
-} from "dependencytreejs/lib";
+} from "wydependencytreejsiwys/lib";
 
 import EditDialog from "./components/EditDialog.vue";
 import SettingsDropdown from "./components/SettingsDropdown.vue";

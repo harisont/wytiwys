@@ -1,7 +1,7 @@
 import Vue from "vue";
 import vueCustomElement from "vue-custom-element";
 
-import { lightStylesheet } from "dependencytreejs/lib";
+import { lightStylesheet } from "wydependencytreejsiwys/lib";
 
 Vue.config.productionTip = false;
 
