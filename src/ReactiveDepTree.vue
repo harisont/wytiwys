@@ -125,16 +125,28 @@ export default {
     this.sentenceCaretaker = new SentenceCaretaker(this.reactiveSentence);
     this.sentenceCaretaker.backup();
 
+    // handle clicks on individual elements
     this.sentenceSVG.addEventListener("svg-click", e => {
       this.sentenceBus.$emit("reset:allDialog");
       const targetLabel = e.detail.targetLabel;
       const tokenId = e.detail.clicked;
-      this.sentenceBus.$emit("open:editDialog", {
-        ID: tokenId,
-        FIELD: targetLabel // additional param to know which column to modify
-      });
-      // this.svgClick(e);
+      if (targetLabel == "ADD") {
+        alert("TODO: wanna add a node after " + tokenId);
+      } else if (targetLabel == "REMOVE") {
+        alert("TODO: remove node " + tokenId);
+        this.reactiveSentence.removeToken(tokenId);
+      } else {
+        this.sentenceBus.$emit("open:editDialog", {
+          ID: tokenId,
+          FIELD: targetLabel // additional param to know which column to modify
+      })
+      this.sentenceBus.$on("update:token", token => {
+      this.reactiveSentence.updateToken(token);
+      this.sentenceCaretaker.backup();
+      })}
     });
+
+    // handle dragging-and-dropping of edges 
     this.sentenceSVG.addEventListener("svg-drop", e => {
       this.sentenceBus.$emit("reset:allDialog");
       let tokenId;
@@ -153,10 +165,10 @@ export default {
           FIELD: "DEPREL" // additional param to know which column to modify
         });
       }
-    });
-    this.sentenceBus.$on("update:token", token => {
+      this.sentenceBus.$on("update:token", token => {
       this.reactiveSentence.updateToken(token);
       this.sentenceCaretaker.backup();
+      });
     });
   },
   computed: {
