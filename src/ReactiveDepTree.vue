@@ -131,9 +131,8 @@ export default {
       const targetLabel = e.detail.targetLabel;
       const tokenId = e.detail.clicked;
       if (targetLabel == "ADD") {
-        alert("TODO: wanna add a node after " + tokenId);
+        this.reactiveSentence.addEmptyTokenAfter(tokenId);
       } else if (targetLabel == "REMOVE") {
-        alert("TODO: remove node " + tokenId);
         this.reactiveSentence.removeToken(tokenId);
       } else {
         this.sentenceBus.$emit("open:editDialog", {
