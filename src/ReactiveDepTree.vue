@@ -130,8 +130,10 @@ export default {
       this.sentenceBus.$emit("reset:allDialog");
       const targetLabel = e.detail.targetLabel;
       const tokenId = e.detail.clicked;
-      if (targetLabel == "ADD") {
+      if (targetLabel == "ADD_AFTER") {
         this.reactiveSentence.addEmptyTokenAfter(tokenId);
+      } else if (targetLabel == "ADD_BEFORE") {
+        this.reactiveSentence.addEmptyTokenBefore(tokenId);
       } else if (targetLabel == "REMOVE") {
         this.reactiveSentence.removeToken(tokenId);
       } else {
