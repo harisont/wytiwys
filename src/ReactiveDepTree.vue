@@ -154,7 +154,7 @@ export default {
       let headId;
       if (e.detail.hovered > 0) {
         tokenId = e.detail.hovered;
-        headId = e.detail.dragged;
+        headId = parseInt(e.detail.dragged, 10); 
       } else {
         tokenId = e.detail.dragged;
         headId = 0;
