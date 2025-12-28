@@ -130,12 +130,31 @@ export default {
       this.sentenceBus.$emit("reset:allDialog");
       const targetLabel = e.detail.targetLabel;
       const tokenId = e.detail.clicked;
+      const svgPosition = this.sentenceSVG.tokenIndexToSvgPosition[tokenId];
+
+    // just an internal function (lambda) wrapping reactiveSentence.toggleBoolFeat with UI stuff cause I don't know better...
+    const toggle = (feat) => {
+      const button = this.sentenceSVG.tokenSVGs[svgPosition].snapElements[targetLabel];
+      const active = this.reactiveSentence.toggleBoolFeat(tokenId, feat);
+      if (active) {
+        button.removeClass("inactive");
+      } else {
+        button.addClass("inactive");
+      }
+    }
+
       if (targetLabel == "ADD_AFTER") {
         this.reactiveSentence.addEmptyTokenAfter(tokenId);
       } else if (targetLabel == "ADD_BEFORE") {
         this.reactiveSentence.addEmptyTokenBefore(tokenId);
       } else if (targetLabel == "REMOVE") {
         this.reactiveSentence.removeToken(tokenId);
+      } else if (targetLabel.startsWith("ANCHOR")) {
+        toggle("anchored");
+      } else if (targetLabel == "CHAIN") {
+        toggle("subsequent");
+      } else if (targetLabel == "LOCK") {
+        toggle("ordered");
       } else {
         this.sentenceBus.$emit("open:editDialog", {
           ID: tokenId,
