@@ -4,14 +4,6 @@
       <template v-if="minimal == false">
         <div class="meta">
           <div class="meta__header">
-            <SettingsDropdown
-              class="meta__dropdown"
-              :sentenceBus="sentenceBus"
-              :sentenceCaretaker="sentenceCaretaker"
-              :interactive="interactive"
-              :reactiveSentence="reactiveSentence"
-              :sentenceSVG="sentenceSVG"
-            />
             <span class="meta__text">{{ sentenceText }}</span>
           </div>
           <div class="meta__infos">
@@ -54,11 +46,10 @@ import {
 } from "wydependencytreejsiwys/lib";
 
 import EditDialog from "./components/EditDialog.vue";
-import SettingsDropdown from "./components/SettingsDropdown.vue";
 import ShowConll from "./components/ShowConll.vue";
 
 export default {
-  components: { EditDialog, SettingsDropdown, ShowConll },
+  components: { EditDialog, ShowConll },
   // props: ["conll", "interactive", "shown-features"],
   props: {
     conll: String,
