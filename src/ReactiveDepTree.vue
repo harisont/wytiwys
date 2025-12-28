@@ -2,15 +2,8 @@
   <div class="scroll-wrapper">
     <div class="component-wrapper">
       <template v-if="minimal == false">
-        <div class="meta">
-          <div class="meta__header">
-            <span class="meta__text">{{ sentenceText }}</span>
-          </div>
-          <div class="meta__infos">
-            <span v-for="(metaValue, metaKey) of shownMetasObj" :key="metaKey"
-              >{{ metaKey }} = {{ metaValue }}<br
-            /></span>
-          </div>
+        <div class="header">
+          <ShownFeatures :shown-features="shownFeatures"/>
         </div>
         <svg
           ref="svgWrapper"
@@ -47,9 +40,10 @@ import {
 
 import EditDialog from "./components/EditDialog.vue";
 import ShowConll from "./components/ShowConll.vue";
+import ShownFeatures from "./components/ShownFeatures.vue";
 
 export default {
-  components: { EditDialog, ShowConll },
+  components: { EditDialog, ShowConll, ShownFeatures },
   // props: ["conll", "interactive", "shown-features"],
   props: {
     conll: String,
@@ -229,7 +223,7 @@ export default {
   padding: 0.5em 0 0.17em 0;
 }
 
-.meta__header {
+.header {
   margin-bottom: 10px;
 }
 
