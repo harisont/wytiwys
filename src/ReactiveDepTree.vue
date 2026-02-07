@@ -86,15 +86,11 @@ export default {
     const shownFeatures = this.processFeaturesInput(this.shownFeatures);
     const hiddenFeatures = this.processFeaturesInput(this.hiddenFeatures);
 
-    if (shownFeatures.length === 0) {
-      sentenceSVGOptions.shownFeatures = this.reactiveSentence.getAllFeaturesSet();
-    } else {
-      sentenceSVGOptions.shownFeatures = shownFeatures;
-    }
-
+    sentenceSVGOptions.shownFeatures = shownFeatures;
     sentenceSVGOptions.shownFeatures = sentenceSVGOptions.shownFeatures.filter(
       x => !hiddenFeatures.includes(x)
     );
+
     sentenceSVGOptions.interactive = this.interactive;
 
     sentenceSVGOptions.tokenSpacing = this.tokenSpacing;
