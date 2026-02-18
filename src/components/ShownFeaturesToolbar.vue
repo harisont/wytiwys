@@ -1,56 +1,13 @@
 <template>
-  <div class="meta__shown_features">
+  <div class="meta__shown_features" ref="sft">
     <span class="checkbox"> 👁 </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('FORM')" type="checkbox" ref="FORM" name="shown_features" value="FORM">
-      <label for="FORM">FORM</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('LEMMA')" type="checkbox" ref="LEMMA" name="shown_features" value="LEMMA">
-      <label for="LEMMA">LEMMA</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('UPOS')" type="checkbox" ref="UPOS" name="shown_features" value="UPOS">
-      <label for="UPOS">UPOS</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('XPOS')" type="checkbox" ref="XPOS" name="shown_features" value="XPOS">
-      <label for="XPOS">XPOS</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('FEATS')" type="checkbox" ref="FEATS" name="shown_features" value="FEATS">
-      <label for="FEATS">FEATS</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('HEAD')" type="checkbox" ref="HEAD" name="shown_features" value="HEAD">
-      <label for="HEAD">HEAD</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('DEPREL')" type="checkbox" ref="DEPREL" name="shown_features" value="DEPREL">
-      <label for="DEPREL">DEPREL</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('DEPS')" type="checkbox" ref="DEPS" name="shown_features" value="DEPS">
-      <label for="DEPS">DEPS</label>
-    </span>
-
-    <span class="checkbox">
-      <input v-on:click="toggleFeature('MISC')" type="checkbox" ref="MISC" name="shown_features" value="MISC">
-      <label for="MISC">MISC</label>
-    </span>
-
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import FeatureCheckbox from './FeatureCheckbox.vue';
+
 export default {
   name: "ShownFeaturesToolbar",
   props: {
@@ -59,30 +16,26 @@ export default {
 
 
   mounted() {
-    const shown = this.shownFeatures;
+    const showableFeatures = [
+      "FORM", "LEMMA", "UPOS", "XPOS", "FEATS", "HEAD", "DEPREL", "DEPS", "MISC"];
 
-    // there must be a better way, but I can't find it
-    const displayableFeats = {
-      "FORM": this.$refs.FORM,
-      "LEMMA": this.$refs.LEMMA,
-      "UPOS": this.$refs.UPOS,
-      "XPOS": this.$refs.XPOS,
-      "FEATS": this.$refs.FEATS,
-      "HEAD": this.$refs.HEAD,
-      "DEPREL": this.$refs.DEPREL,
-      "DEPS": this.$refs.DEPS,
-      "MISC": this.$refs.MISC,
-    }
+    const FeatureCheckboxClass = Vue.extend(FeatureCheckbox);
 
-    for (const feat in displayableFeats) {
-      if (shown.includes(feat)) {
-        displayableFeats[feat].checked = true;        
-      } 
-    };
+    showableFeatures.forEach((feat) => {
+      const checked = this.shownFeatures.includes(feat);
+      console.log(this.shownFeatures);
+      const checkbox = new FeatureCheckboxClass({
+        propsData: {feat: feat, checked: checked}
+      });
+      checkbox.$mount();  
+      this.$refs.sft.appendChild(checkbox.$el);
+      checkbox.$on("updateFeatureVisibility", this.updateFeatureVisibility);
+    })
   },
 
   methods: {
-    toggleFeature(feat) {
+    updateFeatureVisibility(feat) {
+      console.log("updateFeatureVisibility") // somehow never happens
       if (this.shownFeatures.includes(feat)) {
         this.shownFeatures = this.shownFeatures.filter((shownFeat) => shownFeat != feat);
       } else {
