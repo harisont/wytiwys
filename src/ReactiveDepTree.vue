@@ -3,7 +3,7 @@
     <div class="component-wrapper">
       <template v-if="minimal == false">
         <div class="header">
-          <ShownFeatures :shown-features="this.processFeaturesInput(this.shownFeatures)" v-on:updateVisibility="updateVisibility"/>
+          <ShownFeaturesToolbar :shown-features="this.processFeaturesInput(this.shownFeatures)" v-on:updateVisibility="updateVisibility"/>
         </div>
         <svg
           ref="svgWrapper"
@@ -40,10 +40,10 @@ import {
 
 import EditDialog from "./components/EditDialog.vue";
 import ShowConll from "./components/ShowConll.vue";
-import ShownFeatures from "./components/ShownFeatures.vue";
+import ShownFeaturesToolbar from "./components/ShownFeaturesToolbar.vue";
 
 export default {
-  components: { EditDialog, ShowConll, ShownFeatures },
+  components: { EditDialog, ShowConll, ShownFeaturesToolbar },
   props: {
     conll: String,
     interactive: Boolean,
@@ -76,7 +76,7 @@ export default {
   },
   mounted() {
     const shownFeatures = this.processFeaturesInput(this.shownFeatures);
-    this.makeSVG(shownFeatures);
+    this.renderSentence(shownFeatures);
   },
   computed: {
     shownMetasList() {
@@ -84,7 +84,8 @@ export default {
     }
   },
   methods: {
-    makeSVG(shownFeatures) {
+    // idk if some of this DOESN'T need to be done each time shown features change and could be moved back to mounted(), nor if "render" is an exhaustive term...
+    renderSentence(shownFeatures) {
       const svgWrapper = this.$refs.svgWrapper;
       // add the component to the list of reactiveSentence observers
       this.reactiveSentence.attach(this);
@@ -174,7 +175,7 @@ export default {
 
     updateVisibility(shownFeatures) {
       this.shownFeatures = shownFeatures;
-      this.makeSVG(shownFeatures);
+      this.renderSentence(shownFeatures);
     },
 
     update(reactiveSentence) {
@@ -189,7 +190,7 @@ export default {
       }
     },
     processFeaturesInput(features) {
-      // not sure why and how this method is called every time makeSVG happens but it does 
+      // not sure why and how this method is called every time renderSentence happens but it does 
       // so, return features as is if it is already an array
       if (features instanceof Array) {
         return features;

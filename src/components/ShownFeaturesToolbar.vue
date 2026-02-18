@@ -52,7 +52,7 @@
 
 <script>
 export default {
-  name: "ShownFeatures",
+  name: "ShownFeaturesToolbar",
   props: {
     shownFeatures: []
   },
