@@ -14,8 +14,6 @@ export default {
   },
   methods: {
     toggleFeature() {
-      console.log("toggleFeature")
-      // somehow this message is sent, but not received
       this.$emit("updateFeatureVisibility", this.feat);
     }
   }

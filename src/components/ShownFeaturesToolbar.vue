@@ -23,7 +23,6 @@ export default {
 
     showableFeatures.forEach((feat) => {
       const checked = this.shownFeatures.includes(feat);
-      console.log(this.shownFeatures);
       const checkbox = new FeatureCheckboxClass({
         propsData: {feat: feat, checked: checked}
       });
@@ -35,7 +34,6 @@ export default {
 
   methods: {
     updateFeatureVisibility(feat) {
-      console.log("updateFeatureVisibility") // somehow never happens
       if (this.shownFeatures.includes(feat)) {
         this.shownFeatures = this.shownFeatures.filter((shownFeat) => shownFeat != feat);
       } else {
