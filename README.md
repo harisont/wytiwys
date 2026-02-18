@@ -79,29 +79,9 @@ By default, all features are shown. If you want to only show a small subset of f
 ></reactive-dep-tree>
 ```
 
-
-### hidden-features
-If you want to show all features except a small subset, it can be more convenient to keep the behavior of showing everything, and specifying the features that have to be hidden. To achieve this, you can specify the features you wish to hide in the **hidden-features** parameters as comma separated fields.
-
-```html
-<reactive-dep-tree
-  interactive="true"
-  hidden-features="MISC.highlight,LEMMA"
-  conll="# text = I am eating a pineapple
-    1	I	_	PRON	_	_	2	suj	_	_
-    2	am	be	AUX	_	_	0	root	_	_
-    3	eating	eat	VERB	_	_	2	aux	_	highlight=red
-    4	a	_	DET	_	_	5	det	_	_
-    5	pineapple	_	NOUN	_	_	3	obj	_	_
-"
-></reactive-dep-tree>
-```
-
 #### Name of the column
 Here the name of the 10 columns : 
 ID  FORM  LEMMA UPOS XPOS FEATS HEAD  DEPREL  DEPS MISC
-
-If you want to hide the AlignBegin misc, you need to pass MISC.AlignBegin to **hidden-features** parameter.
 
 #### Size representation of the trees
 

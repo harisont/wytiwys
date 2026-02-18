@@ -3,7 +3,7 @@
     <div class="component-wrapper">
       <template v-if="minimal == false">
         <div class="header">
-          <ShownFeatures :shown-features="shownFeatures"/>
+          <ShownFeatures :shown-features="this.processFeaturesInput(this.shownFeatures)" v-on:updateVisibility="updateVisibility"/>
         </div>
         <svg
           ref="svgWrapper"
@@ -44,12 +44,10 @@ import ShownFeatures from "./components/ShownFeatures.vue";
 
 export default {
   components: { EditDialog, ShowConll, ShownFeatures },
-  // props: ["conll", "interactive", "shown-features"],
   props: {
     conll: String,
     interactive: Boolean,
     shownFeatures: String,
-    hiddenFeatures: String,
     shownMetas: String,
     minimal: {
       type: Boolean,
@@ -77,100 +75,8 @@ export default {
     };
   },
   mounted() {
-    const svgWrapper = this.$refs.svgWrapper;
-    // add the component to the list of reactiveSentence observers
-    this.reactiveSentence.attach(this);
-    this.reactiveSentence.fromSentenceConll(this.conll);
-
-    const sentenceSVGOptions = defaultSentenceSVGOptions();
     const shownFeatures = this.processFeaturesInput(this.shownFeatures);
-    const hiddenFeatures = this.processFeaturesInput(this.hiddenFeatures);
-
-    sentenceSVGOptions.shownFeatures = shownFeatures;
-    sentenceSVGOptions.shownFeatures = sentenceSVGOptions.shownFeatures.filter(
-      x => !hiddenFeatures.includes(x)
-    );
-
-    sentenceSVGOptions.interactive = this.interactive;
-
-    sentenceSVGOptions.tokenSpacing = this.tokenSpacing;
-    sentenceSVGOptions.arcHeight = this.arcHeight;
-
-    this.sentenceSVG = new SentenceSVG(
-      svgWrapper,
-      this.reactiveSentence,
-      sentenceSVGOptions
-    );
-    // this.reactiveSentence.fromSentenceConll(this.conll);
-
-    this.sentenceCaretaker = new SentenceCaretaker(this.reactiveSentence);
-    this.sentenceCaretaker.backup();
-
-    // handle clicks on individual elements
-    this.sentenceSVG.addEventListener("svg-click", e => {
-      this.sentenceBus.$emit("reset:allDialog");
-      const targetLabel = e.detail.targetLabel;
-      const tokenId = e.detail.clicked;
-      const svgPosition = this.sentenceSVG.tokenIndexToSvgPosition[tokenId];
-
-    // just an internal function (lambda) wrapping reactiveSentence.toggleBoolFeat with UI stuff cause I don't know better...
-    const toggle = (feat) => {
-      const button = this.sentenceSVG.tokenSVGs[svgPosition].snapElements[targetLabel];
-      const active = this.reactiveSentence.toggleBoolFeat(tokenId, feat);
-      if (active) {
-        button.removeClass("inactive");
-      } else {
-        button.addClass("inactive");
-      }
-    }
-
-      if (targetLabel == "ADD_AFTER") {
-        this.reactiveSentence.addEmptyTokenAfter(tokenId);
-      } else if (targetLabel == "ADD_BEFORE") {
-        this.reactiveSentence.addEmptyTokenBefore(tokenId);
-      } else if (targetLabel == "REMOVE") {
-        this.reactiveSentence.removeToken(tokenId);
-      } else if (targetLabel.startsWith("ANCHOR")) {
-        toggle("anchored");
-      } else if (targetLabel == "CHAIN") {
-        toggle("subsequent");
-      } else if (targetLabel == "LOCK") {
-        toggle("ordered");
-      } else {
-        this.sentenceBus.$emit("open:editDialog", {
-          ID: tokenId,
-          FIELD: targetLabel // additional param to know which column to modify
-      })
-      this.sentenceBus.$on("update:token", token => {
-      this.reactiveSentence.updateToken(token);
-      this.sentenceCaretaker.backup();
-      })}
-    });
-
-    // handle dragging-and-dropping of edges 
-    this.sentenceSVG.addEventListener("svg-drop", e => {
-      this.sentenceBus.$emit("reset:allDialog");
-      let tokenId;
-      let headId;
-      if (e.detail.hovered > 0) {
-        tokenId = e.detail.hovered;
-        headId = parseInt(e.detail.dragged, 10); 
-      } else {
-        tokenId = e.detail.dragged;
-        headId = 0;
-      }
-      if (tokenId >= 0 && headId >= 0) {
-        this.sentenceBus.$emit("open:editDialog", {
-          ID: tokenId,
-          HEAD: headId,
-          FIELD: "DEPREL" // additional param to know which column to modify
-        });
-      }
-      this.sentenceBus.$on("update:token", token => {
-      this.reactiveSentence.updateToken(token);
-      this.sentenceCaretaker.backup();
-      });
-    });
+    this.makeSVG(shownFeatures);
   },
   computed: {
     shownMetasList() {
@@ -178,6 +84,99 @@ export default {
     }
   },
   methods: {
+    makeSVG(shownFeatures) {
+      const svgWrapper = this.$refs.svgWrapper;
+      // add the component to the list of reactiveSentence observers
+      this.reactiveSentence.attach(this);
+      this.reactiveSentence.fromSentenceConll(this.conll);
+
+      const sentenceSVGOptions = defaultSentenceSVGOptions();
+      sentenceSVGOptions.shownFeatures = shownFeatures;
+      sentenceSVGOptions.interactive = this.interactive;
+      sentenceSVGOptions.tokenSpacing = this.tokenSpacing;
+      sentenceSVGOptions.arcHeight = this.arcHeight;
+
+      this.sentenceSVG = new SentenceSVG(
+        svgWrapper,
+        this.reactiveSentence,
+        sentenceSVGOptions
+      );
+
+      this.sentenceCaretaker = new SentenceCaretaker(this.reactiveSentence);
+      this.sentenceCaretaker.backup();
+
+      // handle clicks on individual elements
+      this.sentenceSVG.addEventListener("svg-click", e => {
+        this.sentenceBus.$emit("reset:allDialog");
+        const targetLabel = e.detail.targetLabel;
+        const tokenId = e.detail.clicked;
+        const svgPosition = this.sentenceSVG.tokenIndexToSvgPosition[tokenId];
+
+      // just an internal function (lambda) wrapping reactiveSentence.toggleBoolFeat with UI stuff cause I don't know better...
+      const toggle = (feat) => {
+        const button = this.sentenceSVG.tokenSVGs[svgPosition].snapElements[targetLabel];
+        const active = this.reactiveSentence.toggleBoolFeat(tokenId, feat);
+        if (active) {
+          button.removeClass("inactive");
+        } else {
+          button.addClass("inactive");
+        }
+      }
+
+        if (targetLabel == "ADD_AFTER") {
+          this.reactiveSentence.addEmptyTokenAfter(tokenId);
+        } else if (targetLabel == "ADD_BEFORE") {
+          this.reactiveSentence.addEmptyTokenBefore(tokenId);
+        } else if (targetLabel == "REMOVE") {
+          this.reactiveSentence.removeToken(tokenId);
+        } else if (targetLabel.startsWith("ANCHOR")) {
+          toggle("anchored");
+        } else if (targetLabel == "CHAIN") {
+          toggle("subsequent");
+        } else if (targetLabel == "LOCK") {
+          toggle("ordered");
+        } else {
+          this.sentenceBus.$emit("open:editDialog", {
+            ID: tokenId,
+            FIELD: targetLabel // additional param to know which column to modify
+        })
+        this.sentenceBus.$on("update:token", token => {
+        this.reactiveSentence.updateToken(token);
+        this.sentenceCaretaker.backup();
+        })}
+      });
+
+      // handle dragging-and-dropping of edges 
+      this.sentenceSVG.addEventListener("svg-drop", e => {
+        this.sentenceBus.$emit("reset:allDialog");
+        let tokenId;
+        let headId;
+        if (e.detail.hovered > 0) {
+          tokenId = e.detail.hovered;
+          headId = parseInt(e.detail.dragged, 10); 
+        } else {
+          tokenId = e.detail.dragged;
+          headId = 0;
+        }
+        if (tokenId >= 0 && headId >= 0) {
+          this.sentenceBus.$emit("open:editDialog", {
+            ID: tokenId,
+            HEAD: headId,
+            FIELD: "DEPREL" // additional param to know which column to modify
+          });
+        }
+        this.sentenceBus.$on("update:token", token => {
+        this.reactiveSentence.updateToken(token);
+        this.sentenceCaretaker.backup();
+        });
+      });
+    },
+
+    updateVisibility(shownFeatures) {
+      this.shownFeatures = shownFeatures;
+      this.makeSVG(shownFeatures);
+    },
+
     update(reactiveSentence) {
       // this method is called whenever the reactiveSentence instance changes and call the 'update()' method of all his observers
       this.sentenceText = reactiveSentence.getSentenceText();
@@ -190,6 +189,11 @@ export default {
       }
     },
     processFeaturesInput(features) {
+      // not sure why and how this method is called every time makeSVG happens but it does 
+      // so, return features as is if it is already an array
+      if (features instanceof Array) {
+        return features;
+      }
       let processedFeatures;
       if (features) {
         processedFeatures = features.split(",");
