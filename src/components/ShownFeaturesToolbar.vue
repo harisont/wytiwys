@@ -1,6 +1,6 @@
 <template>
-  <div class="meta__shown_features" ref="sft">
-    <span class="checkbox"> 👁 </span>
+  <div class="meta__shown_features center" ref="sft">
+    <span> 👁 </span>
   </div>
 </template>
 

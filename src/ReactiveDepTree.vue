@@ -7,13 +7,15 @@
         </div>
         <svg
           ref="svgWrapper"
-          class="svg-tree"
+          class="svg-tree center"
           xmlns="http://www.w3.org/2000/svg"
         />
+        <button class="center" v-on:click="toggleConll">CoNLL-U</button>
         <EditDialog :sentenceBus="sentenceBus" />
         <ShowConll
           :reactiveSentence="reactiveSentence"
           :sentenceBus="sentenceBus"
+          :shownFeatures="shownFeatures"
         />
         <v-style ref="stylee"> </v-style>
       </template>
@@ -84,6 +86,9 @@ export default {
     }
   },
   methods: {
+    toggleConll() {
+      this.sentenceBus.$emit("UI:toggle-conll");
+    },
     // idk if some of this DOESN'T need to be done each time shown features change and could be moved back to mounted(), nor if "render" is an exhaustive term...
     renderSentence(shownFeatures) {
       const svgWrapper = this.$refs.svgWrapper;
@@ -248,4 +253,11 @@ export default {
   font-style: italic;
   padding-left: 65px;
 }
+
+.center {
+  display: block;
+  margin: auto;
+  width: max-content;
+}
+
 </style>
