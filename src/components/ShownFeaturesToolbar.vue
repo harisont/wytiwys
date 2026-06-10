@@ -17,7 +17,7 @@ export default {
 
   mounted() {
     const showableFeatures = [
-      "FORM", "LEMMA", "UPOS", "XPOS", "FEATS", "HEAD", "DEPREL", "DEPS", "MISC"];
+      "FORM", "LEMMA", "UPOS", "XPOS", "FEATS", "HEAD", "DEPREL", "MISC"];
 
     const FeatureCheckboxClass = Vue.extend(FeatureCheckbox);
 
