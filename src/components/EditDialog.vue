@@ -39,34 +39,7 @@ export default {
       if (newValue === "") {
         newValue = "_";
       }
-      switch (this.field) {
-        case "FORM":
-            this.token.FORM = newValue;
-            break;
-        case "LEMMA":
-            this.token.LEMMA = newValue;
-            break;
-        case "UPOS":
-            this.token.UPOS = newValue;
-            break;
-        case "XPOS":
-            this.token.UPOS = newValue;
-            break;
-        case "FEATS":
-            this.token.FEATS = newValue;
-            break;
-        case "DEPREL":
-            this.token.DEPREL = newValue;
-            break;
-        case "DEPS":
-            this.token.DEPS = newValue;
-            break;
-        case "MISC":
-            this.token.MISC = newValue;
-            break;
-        default:
-            break;
-      }
+      this.token[this.field] = newValue;
       this.sentenceBus.$emit("update:token", this.token);
       this.token = {};
       this.dialog = false;
