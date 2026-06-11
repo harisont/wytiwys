@@ -6,6 +6,7 @@
       type="text"
       v-on:keyup.enter="onValidate"
       v-model="tagValue"
+      :placeholder="this.placeholder"
     />
   </div>
 </template>
@@ -26,6 +27,7 @@ export default {
       this.dialog = true;
       this.token = params;
       this.field = params["FIELD"];
+      this.placeholder = params["VALUE"];
       this.focusInput();
     });
     this.sentenceBus.$on("reset:allDialog", () => {
@@ -42,11 +44,12 @@ export default {
       this.token[this.field] = newValue;
       this.sentenceBus.$emit("update:token", this.token);
       this.token = {};
+      this.$refs.input.reset();
       this.dialog = false;
     },
     focusInput() {
       setTimeout(() => {
-        this.$refs.input.focus();
+        this.$refs.input.value = "";
       }, 100);
     }
   }

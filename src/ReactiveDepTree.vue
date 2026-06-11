@@ -10,8 +10,8 @@
           class="svg-tree center"
           xmlns="http://www.w3.org/2000/svg"
         />
-        <button class="center" v-on:click="toggleConll">CoNLL-U</button>
         <EditDialog :sentenceBus="sentenceBus" />
+        <button class="center" v-on:click="toggleConll">CoNLL-U</button>
         <ShowConll
           :reactiveSentence="reactiveSentence"
           :sentenceBus="sentenceBus"
@@ -117,6 +117,8 @@ export default {
         const targetLabel = e.detail.targetLabel;
         const tokenId = e.detail.clicked;
         const svgPosition = this.sentenceSVG.tokenIndexToSvgPosition[tokenId];
+        const oldValue = this.sentenceSVG.tokenSVGs[svgPosition].snapElements[targetLabel].innerSVG();
+        
 
       // just an internal function (lambda) wrapping reactiveSentence.toggleBoolFeat with UI stuff cause I don't know better...
       const toggle = (feat) => {
@@ -144,7 +146,8 @@ export default {
         } else {
           this.sentenceBus.$emit("open:editDialog", {
             ID: tokenId,
-            FIELD: targetLabel // additional param to know which column to modify
+            FIELD: targetLabel, // additional param to know which column to modify
+            VALUE: oldValue
         })
         this.sentenceBus.$on("update:token", token => {
         this.reactiveSentence.updateToken(token);
@@ -164,11 +167,14 @@ export default {
           tokenId = e.detail.dragged;
           headId = 0;
         }
+        const svgPosition = this.sentenceSVG.tokenIndexToSvgPosition[tokenId];
+        const oldValue = this.sentenceSVG.tokenSVGs[svgPosition].snapElements["DEPREL"].innerSVG();
         if (tokenId >= 0 && headId >= 0) {
           this.sentenceBus.$emit("open:editDialog", {
             ID: tokenId,
             HEAD: headId,
-            FIELD: "DEPREL" // additional param to know which column to modify
+            FIELD: "DEPREL", // additional param to know which column to modify
+            VALUE: oldValue
           });
         }
         this.sentenceBus.$on("update:token", token => {
